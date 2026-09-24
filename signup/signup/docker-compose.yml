@@ -1,43 +1,14 @@
 services:
-
-  mysql:
-    image: mysql:8.4
-    container_name: campus_mysql
-    restart: unless-stopped
-
-    environment:
-      MYSQL_DATABASE: campus_placement
-      MYSQL_ROOT_PASSWORD: 12345678
-
-    ports:
-      - "3307:3306"
-
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
   signup-service:
     build: .
     container_name: signup_service
-
-    depends_on:
-      mysql:
-        condition: service_healthy
 
     ports:
       - "9001:9001"
 
     environment:
-      DB_URL: jdbc:mysql://mysql:3306/campus_placement
-      DB_USERNAME: root
-      DB_PASSWORD: 12345678
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
 
     restart: unless-stopped
-
-volumes:
-  mysql_data:
